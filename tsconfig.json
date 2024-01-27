@@ -2,16 +2,21 @@
   "compilerOptions": {
     "lib": ["es2023"],
     "target": "es2022",
-    "module": "node16",
+    "module": "ES2022",
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "moduleResolution": "node16",
+    "moduleResolution": "node",
     "outDir": "dist",
     "declaration": true,
     "declarationDir": "dist/types",
-    "sourceMap": true
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "baseUrl": "src",
   },
-  "include": ["src"]
+  "ts-node": {
+    "files": true
+  },
+  "include": ["src/**/*"],
 }
 
 

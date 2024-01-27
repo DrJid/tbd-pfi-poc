@@ -14,9 +14,12 @@
   "dependencies": {
     "@tbdex/http-server": "^0.24.0",
     "@types/express": "^4.17.21",
+    "@types/pg": "^8.11.0",
     "@web5/credentials": "^0.4.1",
     "@web5/dids": "^0.2.4",
     "express": "^4.18.2",
+    "pg": "^8.11.3",
+    "pg-format": "^1.0.4",
     "typescript": "^5.3.3"
   },
   "devDependencies": {
