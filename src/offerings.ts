@@ -32,7 +32,11 @@ export class _Offerings implements OfferingsApi {
       return undefined
     }
 
-    return Offering.factory(result.offering)
+    console.log("result.offering: ", result.offering)
+    const offeringFactory =  Offering.factory(result.offering)
+    console.log("offeringFactory: ", offeringFactory)
+
+    return result.offering
 
   }
 
