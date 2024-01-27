@@ -42,5 +42,4 @@ httpApi.submit('close', async (ctx: any, close: Close) => {
 
 httpApi.listen(port, () => {
   console.log(`Drjid TBD PFI POC listening on port ${port}`)
-  runSeedOfferings()
 })
