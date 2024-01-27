@@ -28,6 +28,7 @@ httpApi.api.get('/', async (req, res) => {
 })
 
 httpApi.submit('rfq', async (ctx: any, rfq: Rfq) => {
+  console.log("Got RFQ Message", rfq)
   await Exchanges.addMessage({ message: rfq as Rfq })
 })
 

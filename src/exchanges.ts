@@ -2,6 +2,7 @@ import { Close, MessageKind, MessageKindClass, Order, OrderStatus, Quote, Exchan
 import { Message } from '@tbdex/http-server'
 import { pfidid } from './util/pfidid.js'
 import client from './util/db.js'
+import { PortableDid } from '@web5/dids'
 
 class _ExchangeRepository implements ExchangesApi {
 
@@ -202,7 +203,7 @@ class _ExchangeRepository implements ExchangesApi {
           }
         }
       })
-      await quote.sign(pfidid)
+      await quote.sign(pfidid as PortableDid)
       this.addMessage({ message: quote as Quote})
     }
 
@@ -217,7 +218,7 @@ class _ExchangeRepository implements ExchangesApi {
           orderStatus: 'PROCESSING'
         }
       })
-      await orderStatus.sign(pfidid)
+      await orderStatus.sign(pfidid as PortableDid)
       this.addMessage({ message: orderStatus as OrderStatus})
 
       await new Promise(resolve => setTimeout(resolve, 1000)) // 1 second delay
@@ -232,7 +233,7 @@ class _ExchangeRepository implements ExchangesApi {
           orderStatus: 'COMPLETED'
         }
       })
-      await orderStatus.sign(pfidid)
+      await orderStatus.sign(pfidid as PortableDid)
       this.addMessage({ message: orderStatus as OrderStatus})
 
       // finally close the exchange
@@ -246,7 +247,7 @@ class _ExchangeRepository implements ExchangesApi {
           reason: 'Order fulfilled'
         }
       })
-      await close.sign(pfidid)
+      await close.sign(pfidid as PortableDid)
       this.addMessage({ message: close as Close })
     }
   }

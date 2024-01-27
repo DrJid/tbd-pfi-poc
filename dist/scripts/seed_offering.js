@@ -1,7 +1,7 @@
 import { Offering } from '@tbdex/http-server';
 import { pfidid } from '../util/pfidid.js';
 import { Offerings } from '../offerings.js';
-export async function run() {
+export async function runSeedOfferings() {
     const offering = Offering.create({
         metadata: { from: pfidid.did },
         data: {

@@ -136,6 +136,8 @@ class _ExchangeRepository {
     async addMessage(opts) {
         const { message } = opts;
         const subject = aliceMessageKinds.has(message.kind) ? message.from : message.to;
+        console.log("Add Message: ", message);
+        console.log("Add Message Subject: ", subject);
         /*
         const result = await Postgres.client.insertInto('exchange')
           .values({
@@ -222,9 +224,7 @@ class _ExchangeRepository {
 const aliceMessageKinds = new Set(['rfq', 'order']);
 export const Exchanges = new _ExchangeRepository();
 /*
-
 class CustomExchangeApiProvider implements ExchangesApi {
-
   async write({ message }: { message: Rfq | Order | Close }) {
     console.log('write', message);
   }

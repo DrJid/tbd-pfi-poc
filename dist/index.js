@@ -10,6 +10,7 @@ httpApi.api.get('/', async (req, res) => {
     res.send('Please use the tbdex protocol to communicate with this server or a suitable library: https://github.com/TBD54566975/tbdex-protocol');
 });
 httpApi.submit('rfq', async (ctx, rfq) => {
+    console.log("Got RFQ Message", rfq);
     await Exchanges.addMessage({ message: rfq });
 });
 httpApi.submit('order', async (ctx, order) => {
@@ -20,6 +21,5 @@ httpApi.submit('close', async (ctx, close) => {
 });
 httpApi.listen(port, () => {
     console.log(`Drjid TBD PFI POC listening on port ${port}`);
-    Offerings.getOfferings();
 });
 //# sourceMappingURL=index.js.map

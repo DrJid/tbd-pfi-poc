@@ -1,1 +1,1 @@
-export declare function run(): Promise<void>;
+export declare function runSeedOfferings(): Promise<void>;

@@ -1,6 +1,7 @@
 import { Offering } from '@tbdex/http-server'
 import { pfidid }  from '../util/pfidid.js'
 import { Offerings } from '../offerings.js'
+import { PortableDid } from '@web5/dids'
 
 export async function runSeedOfferings() {
   const offering = Offering.create({
@@ -86,7 +87,7 @@ export async function runSeedOfferings() {
     }
   })
   console.log("Unsigned Offering: ", offering)
-  await offering.sign(pfidid)
+  await offering.sign(pfidid as PortableDid)
   console.log("Offering: ", offering)
   await Offerings.create(offering)
 }
