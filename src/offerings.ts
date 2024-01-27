@@ -16,6 +16,7 @@ export class _Offerings implements OfferingsApi {
   }
 
   async getOffering(opts: {id: string}): Promise<Offering> {
+    console.log("Calling Get Offering with id: ", opts.id)
 
     const sql = `
       SELECT * FROM offerings
@@ -36,6 +37,8 @@ export class _Offerings implements OfferingsApi {
   }
 
   async getOfferings(): Promise<Offering[]> {
+    console.log("Calling Get Offerings")
+  
     const sql = `
       SELECT * FROM offerings
     `

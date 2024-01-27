@@ -12,6 +12,7 @@ export class _Offerings {
         console.log(`create offering result: ${JSON.stringify(rows, null, 2)}`);
     }
     async getOffering(opts) {
+        console.log("Calling Get Offering with id: ", opts.id);
         const sql = `
       SELECT * FROM offerings
       WHERE offering_id = $1
@@ -26,6 +27,7 @@ export class _Offerings {
         return Offering.factory(result.offering);
     }
     async getOfferings() {
+        console.log("Calling Get Offerings");
         const sql = `
       SELECT * FROM offerings
     `;
