@@ -68,21 +68,25 @@ export async function runSeedOfferings() {
         }
       ],
       requiredClaims: {
-        id: '7ce4004c-3c38-4853-968b-e411bafcd945',
-        input_descriptors: [{
-          id: 'bbdb9b7c-5754-4f46-b63b-590bada959e0',
-          constraints: {
-            fields: [
-              {
-                path: ['$.type[*]'],
-                filter: {
-                  type: 'string',
-                  pattern: '^SanctionCredential$'
+        id: "7ce4004c-3c38-4853-968b-e411bafcd945",
+        input_descriptors: [
+          {
+            "id": "bbdb9b7c-5754-4f46-b63b-590bada959e0",
+            "constraints": {
+              "fields": [
+                {
+                  "path": [
+                    "$.type"
+                  ],
+                  "filter": {
+                    "type": "string",
+                    "const": "YoloCredential"
+                  }
                 }
-              }
-            ]
+              ]
+            }
           }
-        }]
+        ]
       }
     }
   })

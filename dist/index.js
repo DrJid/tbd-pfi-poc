@@ -2,6 +2,7 @@ import { TbdexHttpServer, } from '@tbdex/http-server';
 const port = process.env.PORT || 5001;
 import { Offerings } from './offerings.js';
 import { Exchanges } from './exchanges.js';
+import { runSeedOfferings } from './scripts/seed_offering.js';
 const httpApi = new TbdexHttpServer({
     exchangesApi: Exchanges,
     offeringsApi: Offerings
@@ -21,5 +22,6 @@ httpApi.submit('close', async (ctx, close) => {
 });
 httpApi.listen(port, () => {
     console.log(`Drjid TBD PFI POC listening on port ${port}`);
+    runSeedOfferings();
 });
 //# sourceMappingURL=index.js.map
