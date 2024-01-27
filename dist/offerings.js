@@ -24,7 +24,10 @@ export class _Offerings {
         if (!result) {
             return undefined;
         }
-        return Offering.factory(result.offering);
+        console.log("result.offering: ", result.offering);
+        const offeringFactory = Offering.factory(result.offering);
+        console.log("offeringFactory: ", offeringFactory);
+        return result.offering;
     }
     async getOfferings() {
         console.log("Calling Get Offerings");

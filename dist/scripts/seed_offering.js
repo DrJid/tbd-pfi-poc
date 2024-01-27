@@ -5,13 +5,24 @@ export async function runSeedOfferings() {
     const offering = Offering.create({
         metadata: { from: pfidid.did },
         data: {
-            description: 'BTC -> USD',
-            payoutUnitsPerPayinUnit: '159517928.60', // ex. we send 100 dollars, so that means 14550.00 KES
+            description: 'BTC -> UGX',
+            payoutUnitsPerPayinUnit: '159517928.60',
             payinCurrency: { currencyCode: 'BTC' },
             payoutCurrency: { currencyCode: 'UGX' },
             payinMethods: [{
                     kind: 'BTC_LIGHTNING',
-                    requiredPaymentDetails: {}
+                    requiredPaymentDetails: {
+                        $schema: 'http://json-schema.org/draft-07/schema',
+                        type: 'object',
+                        properties: {
+                            address: {
+                                type: 'string',
+                                description: 'your Bitcoin Lightning address'
+                            }
+                        },
+                        required: ['address'],
+                        additionalProperties: false
+                    }
                 }],
             payoutMethods: [
                 {
