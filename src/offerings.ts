@@ -19,7 +19,7 @@ export class _Offerings implements OfferingsApi {
 
     const sql = `
       SELECT * FROM offerings
-      WHERE offeringid = $1
+      WHERE offering_id = $1
     `
     const values = [opts.id]
     const response = await client.query(sql, values)

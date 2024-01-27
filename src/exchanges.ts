@@ -258,9 +258,7 @@ export const Exchanges = new _ExchangeRepository()
 
 
 /*
-
 class CustomExchangeApiProvider implements ExchangesApi {
-
   async write({ message }: { message: Rfq | Order | Close }) {
     console.log('write', message);
   }
