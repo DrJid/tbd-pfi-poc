@@ -23,6 +23,7 @@
     "@web5/credentials": "0.4.1",
     "@web5/dids": "0.2.4",
     "axios": "^1.6.7",
+    "dotenv": "^16.4.1",
     "express": "4.18.2",
     "ln-service": "^57.4.0",
     "pg": "8.11.3",
