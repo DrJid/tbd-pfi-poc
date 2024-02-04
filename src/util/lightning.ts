@@ -1,6 +1,5 @@
 
 import * as lnService from 'ln-service'
-import axios from 'axios'
 import { handleLightningInvoicePaid } from '../exchanges.js';
 
 const lnd = lnService.authenticatedLndGrpc({
