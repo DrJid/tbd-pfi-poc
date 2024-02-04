@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["es2023"],
+    "lib": ["es2023", "dom"],
     "target": "es2022",
     "module": "ES2022",
     "esModuleInterop": true,
@@ -12,7 +12,7 @@
     "sourceMap": true,
     "resolveJsonModule": true,
     "baseUrl": "src",
-    "types": ["node"], // This line is crucial
+    "types": ["node"], 
   },
   "ts-node": {
     "files": true
