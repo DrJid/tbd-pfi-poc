@@ -1,0 +1,74 @@
+Arguments: 
+  /Users/drjid/.nvm/versions/node/v18.12.1/bin/node /opt/homebrew/bin/yarn add -D @types/nod
+
+PATH: 
+  /opt/homebrew/bin/:/usr/local/opt/node@10/bin:/Users/drjid/.cargo/bin:/Users/drjid/Library/Android/sdk/tools:/Users/drjid/Library/Android/sdk/platform-tools:/Applications/Postgres.app/Contents/Versions/latest/bin:/Users/drjid/.nvm/versions/node/v18.12.1/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/Apple/usr/bin:/Users/drjid/Library/Flutter/bin:/Users/drjid/go/bin
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  18.12.1
+
+Platform: 
+  darwin arm64
+
+Trace: 
+  Error: https://registry.yarnpkg.com/@types%2fnod: Not found
+      at params.callback [as _callback] (/opt/homebrew/lib/node_modules/yarn/lib/cli.js:66145:18)
+      at self.callback (/opt/homebrew/lib/node_modules/yarn/lib/cli.js:140890:22)
+      at Request.emit (node:events:513:28)
+      at Request.<anonymous> (/opt/homebrew/lib/node_modules/yarn/lib/cli.js:141862:10)
+      at Request.emit (node:events:513:28)
+      at IncomingMessage.<anonymous> (/opt/homebrew/lib/node_modules/yarn/lib/cli.js:141784:12)
+      at Object.onceWrapper (node:events:627:28)
+      at IncomingMessage.emit (node:events:525:35)
+      at endReadableNT (node:internal/streams/readable:1359:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+
+npm manifest: 
+  {
+    "name": "tbd-pfi-poc",
+    "engines": {
+      "node": "18.12.1",
+      "npm": "8.19.2"
+    },
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+      "start": "node dist/index.js",
+      "build": "tsc",
+      "dev": "tsc && node dist/index.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+      "@tbdex/http-server": "0.24.0",
+      "@types/express": "4.17.21",
+      "@types/pg": "8.11.0",
+      "@web5/api": "0.8.4",
+      "@web5/credentials": "0.4.1",
+      "@web5/dids": "0.2.4",
+      "axios": "^1.6.7",
+      "dotenv": "^16.4.1",
+      "express": "4.18.2",
+      "ln-service": "^57.4.0",
+      "pg": "8.11.3",
+      "pg-format": "1.0.4",
+      "typescript": "5.3.3"
+    },
+    "devDependencies": {
+      "@types/dns-packet": "^5.6.5",
+      "@types/node": "^20.11.16",
+      "@types/readable-stream": "4.0.10"
+    },
+    "type": "module"
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
