@@ -18,6 +18,7 @@
   "dependencies": {
     "@tbdex/http-server": "0.24.0",
     "@types/express": "4.17.21",
+    "@types/node": "^20.11.16",
     "@types/pg": "8.11.0",
     "@web5/api": "0.8.4",
     "@web5/credentials": "0.4.1",
@@ -32,7 +33,6 @@
   },
   "devDependencies": {
     "@types/dns-packet": "^5.6.5",
-    "@types/node": "^20.11.16",
     "@types/readable-stream": "4.0.10"
   },
   "type": "module"
