@@ -1,4 +1,5 @@
-export const pfidid = {
+// Remote Did (Heroku)
+export const remotepfidid = {
     keySet: {
         verificationMethodKeys: [
             {
@@ -104,4 +105,113 @@ export const pfidid = {
         assertionMethod: ['#dwn-sig']
     }
 };
+// Local Did - Routes to ngrok (Okay, but which DID is this?)
+export const localpfidid = {
+    keySet: {
+        verificationMethodKeys: [
+            {
+                privateKeyJwk: {
+                    d: 'PuGRZq1AMn3wWC6KqG6EnB-jMZ1_DlltZWD0ez0KguQ',
+                    alg: 'EdDSA',
+                    crv: 'Ed25519',
+                    kty: 'OKP',
+                    ext: 'true',
+                    key_ops: ['sign'],
+                    x: 'qd2t-Yomh0-WoBivZz0lncK0pknvgmiilWc_iTd51dk',
+                    kid: 'dwn-sig'
+                },
+                publicKeyJwk: {
+                    alg: 'EdDSA',
+                    crv: 'Ed25519',
+                    kty: 'OKP',
+                    ext: 'true',
+                    key_ops: ['verify'],
+                    x: 'qd2t-Yomh0-WoBivZz0lncK0pknvgmiilWc_iTd51dk',
+                    kid: 'dwn-sig'
+                },
+                relationships: ['authentication', 'assertionMethod']
+            }
+        ],
+        recoveryKey: {
+            privateKeyJwk: {
+                d: 'YPycBRj0U-M_TzsBD0IbyXR4pX3qL9IzrLtwo-1VDhY',
+                alg: 'ES256K',
+                crv: 'secp256k1',
+                kty: 'EC',
+                ext: 'true',
+                key_ops: ['sign'],
+                x: 'JgCnq1mdAX66xPLDR86RVFjRY6IEjb85RtvjffvVta0',
+                y: '5TBG4OWBWIUzw9hjzhzASHz8_RhYBgxdMT9TRiQyHcg',
+                kid: 'ion-recovery-1'
+            },
+            publicKeyJwk: {
+                alg: 'ES256K',
+                crv: 'secp256k1',
+                kty: 'EC',
+                ext: 'true',
+                key_ops: ['verify'],
+                x: 'JgCnq1mdAX66xPLDR86RVFjRY6IEjb85RtvjffvVta0',
+                y: '5TBG4OWBWIUzw9hjzhzASHz8_RhYBgxdMT9TRiQyHcg',
+                kid: 'ion-recovery-1'
+            }
+        },
+        updateKey: {
+            privateKeyJwk: {
+                d: 'wk-_dltLvJfmcq9L6_amIKl6VoXgE-a2v27SjMw0vq8',
+                alg: 'ES256K',
+                crv: 'secp256k1',
+                kty: 'EC',
+                ext: 'true',
+                key_ops: ['sign'],
+                x: 'YWR1lKkn6og0foXorkUa5XCqE7siQutBYRdBE07zrTI',
+                y: 'noc46ht5OlACsjvVIY5hoaeujL3yfR3n0LVzVyDbnX8',
+                kid: 'ion-update-1'
+            },
+            publicKeyJwk: {
+                alg: 'ES256K',
+                crv: 'secp256k1',
+                kty: 'EC',
+                ext: 'true',
+                key_ops: ['verify'],
+                x: 'YWR1lKkn6og0foXorkUa5XCqE7siQutBYRdBE07zrTI',
+                y: 'noc46ht5OlACsjvVIY5hoaeujL3yfR3n0LVzVyDbnX8',
+                kid: 'ion-update-1'
+            }
+        }
+    },
+    did: 'did:ion:EiCehP_g9KmcHKWmIVZ1et2qYjcCzEnLg4Y89d_kOTO4wA:eyJkZWx0YSI6eyJwYXRjaGVzIjpbeyJhY3Rpb24iOiJyZXBsYWNlIiwiZG9jdW1lbnQiOnsicHVibGljS2V5cyI6W3siaWQiOiJkd24tc2lnIiwicHVibGljS2V5SndrIjp7ImNydiI6IkVkMjU1MTkiLCJrdHkiOiJPS1AiLCJ4IjoicWQydC1Zb21oMC1Xb0Jpdlp6MGxuY0swcGtudmdtaWlsV2NfaVRkNTFkayJ9LCJwdXJwb3NlcyI6WyJhdXRoZW50aWNhdGlvbiIsImFzc2VydGlvbk1ldGhvZCJdLCJ0eXBlIjoiSnNvbldlYktleTIwMjAifV0sInNlcnZpY2VzIjpbeyJpZCI6InBmaSIsInNlcnZpY2VFbmRwb2ludCI6Imh0dHBzOi8vMGFjYy0xNTctMjQ1LTI0Ny0xMTQubmdyb2stZnJlZS5hcHAiLCJ0eXBlIjoiUEZJIn1dfX1dLCJ1cGRhdGVDb21taXRtZW50IjoiRWlDZVZqMi10WTBsSmVRV1hHUjFlcGxpMW90OUFaUDF1NUotYnJfQUF2T0hidyJ9LCJzdWZmaXhEYXRhIjp7ImRlbHRhSGFzaCI6IkVpQnpkYk9SMHpOaFVIMFVVOUY4S1RrVXVMSmktOXZLY0V6alFGMmtqSDFucUEiLCJyZWNvdmVyeUNvbW1pdG1lbnQiOiJFaUJ0UTQ4WmVQMWxFMTdnSl92UUk1c2FscU03LVJPb2s1UnhLR09wMTVjdTRBIn19',
+    canonicalId: 'did:ion:EiCehP_g9KmcHKWmIVZ1et2qYjcCzEnLg4Y89d_kOTO4wA',
+    document: {
+        id: 'did:ion:EiCehP_g9KmcHKWmIVZ1et2qYjcCzEnLg4Y89d_kOTO4wA:eyJkZWx0YSI6eyJwYXRjaGVzIjpbeyJhY3Rpb24iOiJyZXBsYWNlIiwiZG9jdW1lbnQiOnsicHVibGljS2V5cyI6W3siaWQiOiJkd24tc2lnIiwicHVibGljS2V5SndrIjp7ImNydiI6IkVkMjU1MTkiLCJrdHkiOiJPS1AiLCJ4IjoicWQydC1Zb21oMC1Xb0Jpdlp6MGxuY0swcGtudmdtaWlsV2NfaVRkNTFkayJ9LCJwdXJwb3NlcyI6WyJhdXRoZW50aWNhdGlvbiIsImFzc2VydGlvbk1ldGhvZCJdLCJ0eXBlIjoiSnNvbldlYktleTIwMjAifV0sInNlcnZpY2VzIjpbeyJpZCI6InBmaSIsInNlcnZpY2VFbmRwb2ludCI6Imh0dHBzOi8vMGFjYy0xNTctMjQ1LTI0Ny0xMTQubmdyb2stZnJlZS5hcHAiLCJ0eXBlIjoiUEZJIn1dfX1dLCJ1cGRhdGVDb21taXRtZW50IjoiRWlDZVZqMi10WTBsSmVRV1hHUjFlcGxpMW90OUFaUDF1NUotYnJfQUF2T0hidyJ9LCJzdWZmaXhEYXRhIjp7ImRlbHRhSGFzaCI6IkVpQnpkYk9SMHpOaFVIMFVVOUY4S1RrVXVMSmktOXZLY0V6alFGMmtqSDFucUEiLCJyZWNvdmVyeUNvbW1pdG1lbnQiOiJFaUJ0UTQ4WmVQMWxFMTdnSl92UUk1c2FscU03LVJPb2s1UnhLR09wMTVjdTRBIn19',
+        '@context': [
+            'https://www.w3.org/ns/did/v1',
+            {
+                '@base': 'did:ion:EiCehP_g9KmcHKWmIVZ1et2qYjcCzEnLg4Y89d_kOTO4wA:eyJkZWx0YSI6eyJwYXRjaGVzIjpbeyJhY3Rpb24iOiJyZXBsYWNlIiwiZG9jdW1lbnQiOnsicHVibGljS2V5cyI6W3siaWQiOiJkd24tc2lnIiwicHVibGljS2V5SndrIjp7ImNydiI6IkVkMjU1MTkiLCJrdHkiOiJPS1AiLCJ4IjoicWQydC1Zb21oMC1Xb0Jpdlp6MGxuY0swcGtudmdtaWlsV2NfaVRkNTFkayJ9LCJwdXJwb3NlcyI6WyJhdXRoZW50aWNhdGlvbiIsImFzc2VydGlvbk1ldGhvZCJdLCJ0eXBlIjoiSnNvbldlYktleTIwMjAifV0sInNlcnZpY2VzIjpbeyJpZCI6InBmaSIsInNlcnZpY2VFbmRwb2ludCI6Imh0dHBzOi8vMGFjYy0xNTctMjQ1LTI0Ny0xMTQubmdyb2stZnJlZS5hcHAiLCJ0eXBlIjoiUEZJIn1dfX1dLCJ1cGRhdGVDb21taXRtZW50IjoiRWlDZVZqMi10WTBsSmVRV1hHUjFlcGxpMW90OUFaUDF1NUotYnJfQUF2T0hidyJ9LCJzdWZmaXhEYXRhIjp7ImRlbHRhSGFzaCI6IkVpQnpkYk9SMHpOaFVIMFVVOUY4S1RrVXVMSmktOXZLY0V6alFGMmtqSDFucUEiLCJyZWNvdmVyeUNvbW1pdG1lbnQiOiJFaUJ0UTQ4WmVQMWxFMTdnSl92UUk1c2FscU03LVJPb2s1UnhLR09wMTVjdTRBIn19'
+            }
+        ],
+        service: [
+            {
+                id: '#pfi',
+                type: 'PFI',
+                serviceEndpoint: 'https://0acc-157-245-247-114.ngrok-free.app'
+            }
+        ],
+        verificationMethod: [
+            {
+                id: '#dwn-sig',
+                controller: 'did:ion:EiCehP_g9KmcHKWmIVZ1et2qYjcCzEnLg4Y89d_kOTO4wA:eyJkZWx0YSI6eyJwYXRjaGVzIjpbeyJhY3Rpb24iOiJyZXBsYWNlIiwiZG9jdW1lbnQiOnsicHVibGljS2V5cyI6W3siaWQiOiJkd24tc2lnIiwicHVibGljS2V5SndrIjp7ImNydiI6IkVkMjU1MTkiLCJrdHkiOiJPS1AiLCJ4IjoicWQydC1Zb21oMC1Xb0Jpdlp6MGxuY0swcGtudmdtaWlsV2NfaVRkNTFkayJ9LCJwdXJwb3NlcyI6WyJhdXRoZW50aWNhdGlvbiIsImFzc2VydGlvbk1ldGhvZCJdLCJ0eXBlIjoiSnNvbldlYktleTIwMjAifV0sInNlcnZpY2VzIjpbeyJpZCI6InBmaSIsInNlcnZpY2VFbmRwb2ludCI6Imh0dHBzOi8vMGFjYy0xNTctMjQ1LTI0Ny0xMTQubmdyb2stZnJlZS5hcHAiLCJ0eXBlIjoiUEZJIn1dfX1dLCJ1cGRhdGVDb21taXRtZW50IjoiRWlDZVZqMi10WTBsSmVRV1hHUjFlcGxpMW90OUFaUDF1NUotYnJfQUF2T0hidyJ9LCJzdWZmaXhEYXRhIjp7ImRlbHRhSGFzaCI6IkVpQnpkYk9SMHpOaFVIMFVVOUY4S1RrVXVMSmktOXZLY0V6alFGMmtqSDFucUEiLCJyZWNvdmVyeUNvbW1pdG1lbnQiOiJFaUJ0UTQ4WmVQMWxFMTdnSl92UUk1c2FscU03LVJPb2s1UnhLR09wMTVjdTRBIn19',
+                type: 'JsonWebKey2020',
+                publicKeyJwk: {
+                    crv: 'Ed25519',
+                    kty: 'OKP',
+                    x: 'qd2t-Yomh0-WoBivZz0lncK0pknvgmiilWc_iTd51dk'
+                }
+            }
+        ],
+        authentication: ['#dwn-sig'],
+        assertionMethod: ['#dwn-sig']
+    }
+};
+// process.env.NODE_ENV === 'production'
+export const pfiDid = process.env.NODE_ENV === 'production' ? remotepfidid : localpfidid;
 //# sourceMappingURL=pfidid.js.map

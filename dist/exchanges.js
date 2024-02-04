@@ -1,20 +1,21 @@
 import { Close, OrderStatus, Quote } from '@tbdex/http-server';
 import { Message } from '@tbdex/http-server';
-import { pfidid } from './util/pfidid.js';
+import { pfiDid } from './util/pfidid.js';
 import client from './util/db.js';
-class _ExchangeRepository {
+import { Offerings } from './offerings.js';
+import { getBTCNGNRates, getPayout, sendPayout } from './util/chipper.js';
+import { createInvoice } from './util/lightning.js';
+export class ExchangeRepository {
     async getExchanges(opts) {
-        // TODO: try out GROUP BY! would do it now, just unsure what the return structure looks like
         const exchangeIds = opts.filter.id?.length ? opts.filter.id : [];
         if (exchangeIds.length === 0) {
             return this.getAllExchanges();
         }
         const exchanges = [];
         for (let id of exchangeIds) {
-            console.log('calling id', id);
-            // TODO: handle error property
             try {
                 const exchange = await this.getExchange({ id });
+                console.log('exchange', exchange);
                 if (exchange.length)
                     exchanges.push(exchange);
                 else
@@ -27,32 +28,18 @@ class _ExchangeRepository {
         return exchanges;
     }
     async getAllExchanges() {
-        /*
-        const results = await Postgres.client.selectFrom('exchange')
-          .select(['message'])
-          .orderBy('createdat', 'asc')
-          .execute()
-          */
         const sql = `
-        SELECT message FROM exchanges
-        ORDER BY createdat ASC
+        SELECT message
+        FROM exchanges
+        ORDER BY created_at ASC
       `;
         const { rows: results } = await client.query(sql);
         return this.composeMessages(results);
     }
     async getExchange(opts) {
-        console.log('getting exchange for id', opts.id);
-        /*
-        const results = await Postgres.client.selectFrom('exchange')
-          .select(['message'])
-          .where(eb => eb.and({
-            exchangeid: opts.id,
-          }))
-          .orderBy('createdat', 'asc')
-          .execute()
-          */
         const sql = `
-      SELECT message FROM exchanges
+      SELECT message
+      FROM exchanges
       WHERE exchange_id = $1
       ORDER BY created_at ASC
     `;
@@ -85,15 +72,6 @@ class _ExchangeRepository {
         return await this.getMessage({ exchangeId: opts.exchangeId, messageKind: 'order' });
     }
     async getOrderStatuses(opts) {
-        /*
-        const results = await Postgres.client.selectFrom('exchange')
-          .select(['message'])
-          .where(eb => eb.and({
-            exchangeid: opts.exchangeId,
-            messagekind: 'orderstatus'
-          }))
-          .execute()
-          */
         const sql = `
         SELECT message FROM exchanges
         WHERE exchange_id = $1 AND message_kind = 'orderstatus'
@@ -111,18 +89,9 @@ class _ExchangeRepository {
         return await this.getMessage({ exchangeId: opts.exchangeId, messageKind: 'close' });
     }
     async getMessage(opts) {
-        /*
-        const result = await Postgres.client.selectFrom('exchange')
-          .select(['message'])
-          .where(eb => eb.and({
-            exchangeid: opts.exchangeId,
-            messagekind: opts.messageKind
-          }))
-          .limit(1)
-          .executeTakeFirst()
-          */
         const sql = `
-        SELECT message FROM exchanges
+        SELECT message
+        FROM exchanges
         WHERE exchange_id = $1 AND message_kind = $2
         LIMIT 1
       `;
@@ -136,144 +105,142 @@ class _ExchangeRepository {
     async addMessage(opts) {
         const { message } = opts;
         const subject = aliceMessageKinds.has(message.kind) ? message.from : message.to;
-        console.log("Add Message: ", message);
-        console.log("Add Message Subject: ", subject);
-        /*
-        const result = await Postgres.client.insertInto('exchange')
-          .values({
-            exchangeid: message.exchangeId,
-            messagekind: message.kind,
-            messageid: message.id,
-            subject,
-            message: JSON.stringify(message)
-          })
-          .execute()
-          */
         const sql = `
-        INSERT INTO exchanges (exchange_id, message_kind, message_id, subject, message)
-        VALUES ($1, $2, $3, $4, $5)
-      `;
+      INSERT INTO exchanges (exchange_id, message_kind, message_id, subject, message)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING *
+    `;
         const values = [message.exchangeId, message.kind, message.id, subject, JSON.stringify(message)];
         const { rows: results } = await client.query(sql, values);
         const result = results[0];
         console.log(`Add ${message.kind} Result: ${JSON.stringify(result, null, 2)}`);
-        if (message.kind == 'rfq') {
+        // This is where we create the Quote based on the RFQ
+        // TODO: This is where we also get the real true rate
+        // This is where we'd need to call w/e functions to return the correct exchange rates etc.
+        if (message.kind === 'rfq') {
+            // Create Quote
+            const payoutDetails = message.data.payoutMethod;
+            console.log("Payout Details: ", payoutDetails);
+            // Get the offering object - offering_01hn659cjme4p9n2kqvyr8cvf4
+            const offering = await Offerings.getOffering({ id: message.offeringId });
+            // Expiry Date - 24 hours from now
+            const date = new Date();
+            date.setHours(date.getHours() + 24);
+            const expiresAt = date.toISOString();
+            // Generate receive address
+            const address = await generateReceiveAddress(message.payinAmount, 'BTC', message);
+            const rate = await getBTCNGNRates();
+            const payoutAmount = String((Number(message.payinAmount) * Number(rate)).toFixed(2));
             const quote = Quote.create({
                 metadata: {
-                    from: pfidid.did,
+                    from: pfiDid.did,
                     to: message.from,
                     exchangeId: message.exchangeId
                 },
                 data: {
-                    expiresAt: new Date(2024, 4, 1).toISOString(),
+                    expiresAt,
                     payin: {
-                        currencyCode: 'BTC',
-                        amount: '1000.00'
+                        currencyCode: offering.payinCurrency.currencyCode,
+                        amount: message.payinAmount,
+                        paymentInstruction: {
+                            instruction: 'Please pay this lightning invoice',
+                            link: address
+                        }
                     },
                     payout: {
-                        currencyCode: 'KES',
-                        amount: '123456789.00'
+                        currencyCode: offering.payoutCurrency.currencyCode,
+                        amount: payoutAmount,
+                        paymentInstruction: {
+                            instruction: JSON.stringify(payoutDetails.paymentDetails)
+                        }
                     }
                 }
             });
-            await quote.sign(pfidid);
+            await quote.sign(pfiDid);
             this.addMessage({ message: quote });
         }
         if (message.kind == 'order') {
+            // We received the order -- Begin Processing the status
+            // Set the initial order state, which is awaiting_funds
             let orderStatus = OrderStatus.create({
                 metadata: {
-                    from: pfidid.did,
+                    from: pfiDid.did,
                     to: message.from,
                     exchangeId: message.exchangeId
                 },
                 data: {
-                    orderStatus: 'PROCESSING'
+                    orderStatus: 'awaiting_funds'
                 }
             });
-            await orderStatus.sign(pfidid);
+            await orderStatus.sign(pfiDid);
             this.addMessage({ message: orderStatus });
-            await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second delay
-            orderStatus = OrderStatus.create({
-                metadata: {
-                    from: pfidid.did,
-                    to: message.from,
-                    exchangeId: message.exchangeId
-                },
-                data: {
-                    orderStatus: 'COMPLETED'
-                }
-            });
-            await orderStatus.sign(pfidid);
-            this.addMessage({ message: orderStatus });
-            // finally close the exchange
-            const close = Close.create({
-                metadata: {
-                    from: pfidid.did,
-                    to: message.from,
-                    exchangeId: message.exchangeId
-                },
-                data: {
-                    reason: 'Order fulfilled'
-                }
-            });
-            await close.sign(pfidid);
-            this.addMessage({ message: close });
         }
     }
 }
 const aliceMessageKinds = new Set(['rfq', 'order']);
-export const Exchanges = new _ExchangeRepository();
-/*
-class CustomExchangeApiProvider implements ExchangesApi {
-  async write({ message }: { message: Rfq | Order | Close }) {
-    console.log('write', message);
-  }
- 
-  async getExchanges(opts?: { filter: GetExchangesFilter }): Promise<MessageKindClass[][] | undefined> {
-    console.log('getExchanges called with', opts);
-    // Implement your logic here and return the appropriate value
-    return undefined
-  }
-
-  async getExchange(opts: { id: string }): Promise<MessageKindClass[] | undefined> {
-    console.log('getExchange called with', opts);
-    // Implement your logic here and return the appropriate value
-    return undefined
-  }
-
-  async getRfq(opts: { exchangeId: string }): Promise<Rfq | undefined> {
-    console.log('getRfq called with', opts);
-    // Implement your logic here and return the appropriate value
-    return undefined
-  }
-
-  async getQuote(opts: { exchangeId: string }): Promise<Quote | undefined> {
-    console.log('getQuote called with', opts);
-    // Implement your logic here and return the appropriate value
-    return undefined
-
-  }
-
-  async getOrder(opts: { exchangeId: string }): Promise<Order | undefined> {
-    console.log('getOrder called with', opts);
-    // Implement your logic here and return the appropriate value
-    return undefined
-
-  }
-
-  async getOrderStatuses(opts: { exchangeId: string }): Promise<OrderStatus[] | undefined> {
-    console.log('getOrderStatuses called with', opts);
-    // Implement your logic here and return the appropriate value
-    return undefined
-
-  }
-
-  async getClose(opts: { exchangeId: string }): Promise<Close | undefined> {
-    console.log('getClose called with', opts);
-    // Implement your logic here and return the appropriate value
-    return undefined
-
-  }
+export const Exchanges = new ExchangeRepository();
+// This is also tied to the quote that we are generating - And we'll want to save these
+// values to the DB somewhere
+// I'm just trying to get a POC up for now
+async function generateReceiveAddress(amount, currency, message) {
+    const exchangeId = message.metadata.exchangeId;
+    const satoshiAmount = Math.floor(amount * 100000000);
+    const invoice = await createInvoice(satoshiAmount, exchangeId);
+    return invoice;
 }
-*/
+export async function handleLightningInvoicePaid(invoice) {
+    console.log("Lightning Invoice has been paid", invoice);
+    const exchangeId = invoice.description;
+    const quote = await Exchanges.getQuote({ exchangeId });
+    await updateStatus(exchangeId, 'funds_received');
+    await submitPayout(exchangeId);
+    await updateStatus(exchangeId, 'payment_submitted');
+    await closeTransaction(exchangeId, quote);
+}
+async function updateStatus(exchangeId, status) {
+    const quote = await Exchanges.getQuote({ exchangeId });
+    const orderStatus = OrderStatus.create({
+        metadata: {
+            from: pfiDid.did,
+            to: quote.from,
+            exchangeId: quote.exchangeId
+        },
+        data: {
+            orderStatus: status
+        }
+    });
+    await orderStatus.sign(pfiDid);
+    await Exchanges.addMessage({ message: orderStatus });
+    await new Promise(resolve => setTimeout(resolve, 1000));
+}
+async function submitPayout(exchangeId) {
+    const rfq = await Exchanges.getRfq({ exchangeId });
+    const quote = await Exchanges.getQuote({ exchangeId });
+    const payout = rfq.payoutMethod.paymentDetails;
+    const tag = payout['tag'];
+    const reason = payout['reason'];
+    const amount = Number(quote.data.payout.amount);
+    const currency = quote.data.payout.currencyCode;
+    const reference = exchangeId;
+    await sendPayout(tag, amount, currency, reference);
+    console.log('Will complete payout for quote', JSON.stringify(rfq));
+    return { reference, quote };
+}
+async function closeTransaction(reference, quote) {
+    const payout = await getPayout(reference);
+    if (payout.status === 'SETTLED') {
+        const close = Close.create({
+            metadata: {
+                from: pfiDid.did,
+                to: quote.from,
+                exchangeId: quote.exchangeId
+            },
+            data: {
+                reason: 'Order Complete'
+            }
+        });
+        await close.sign(pfiDid);
+        await Exchanges.addMessage({ message: close });
+    }
+}
 //# sourceMappingURL=exchanges.js.map

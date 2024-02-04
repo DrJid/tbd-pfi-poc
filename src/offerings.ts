@@ -1,32 +1,32 @@
 import type { OfferingsApi } from '@tbdex/http-server'
 import { Offering } from '@tbdex/http-server'
 import client from './util/db.js'
+import { pfiDid } from './util/pfidid.js'
 
-export class _Offerings implements OfferingsApi {
+export class OfferingsRepository implements OfferingsApi {
 
-  async create(offering: Offering) {
+  async create(offering: Offering, pfiDid: string) {
       const sql = `
-        INSERT INTO offerings (offering_id, payin_currency, payout_currency, offering)
-        VALUES($1, $2, $3, $4)
+        INSERT INTO offerings (offering_id, payin_currency, payout_currency, offering, pfi_did)
+        VALUES($1, $2, $3, $4, $5)
         RETURNING *
       `
-      const values = [offering.metadata.id, offering.payinCurrency.currencyCode, offering.payoutCurrency.currencyCode, offering]
+      const values = [offering.metadata.id, offering.payinCurrency.currencyCode, offering.payoutCurrency.currencyCode, offering, pfiDid]
       const { rows } = await client.query(sql, values)
       console.log(`create offering result: ${JSON.stringify(rows, null, 2)}`)
   }
 
   async getOffering(opts: {id: string}): Promise<Offering> {
-    console.log("Calling Get Offering with id: ", opts.id)
+    console.log("Get Offering with id: ", opts)
 
     const sql = `
       SELECT * FROM offerings
       WHERE offering_id = $1
+      AND pfi_did = $2
     `
-    const values = [opts.id]
+    const values = [opts.id, pfiDid.did]
     const response = await client.query(sql, values)
     const result = response.rows[0]
-
-    console.log("getOffering result: ", result)
 
     if (!result) {
       return undefined
@@ -34,19 +34,21 @@ export class _Offerings implements OfferingsApi {
 
     console.log("result.offering: ", result.offering)
     const offeringFactory =  Offering.factory(result.offering)
-    console.log("offeringFactory: ", offeringFactory)
-
-    return result.offering
-
+    console.log("offeringFactory: ", JSON.stringify(offeringFactory, null, 2))
+    return offeringFactory
   }
 
   async getOfferings(): Promise<Offering[]> {
-    console.log("Calling Get Offerings")
+    console.log("** Calling Get Offerings **")
   
     const sql = `
-      SELECT * FROM offerings
+      SELECT * 
+      FROM offerings
+      WHERE pfi_did = $1
     `
-    const response = await client.query(sql)
+    const values = [pfiDid.did]
+
+    const response = await client.query(sql, values)
     const results = response.rows
     
     const offerings: Offering[] = []
@@ -55,32 +57,9 @@ export class _Offerings implements OfferingsApi {
       offerings.push(offering)
     }
 
-    console.log("getOfferings result: ", offerings)
+    console.log("getOfferings result: ", JSON.stringify(offerings, null, 2))
     return offerings
   }
 }
 
-export const Offerings = new _Offerings()
-
-
-/*
-class CustomOfferingsApiProvider implements OfferingsApi {
-  async getOffering(opts: {id: string}): Promise<Offering | undefined> {
-    console.log("getOffering called with", opts)
-
-    return undefined
-  }
-
-
-  async getOfferings(): Promise<Offering[] | undefined> {
-    console.log("getOfferings called")
-
-    let sql = `
-      select * from offerings
-    `
-    const { rows } = await client.query(sql);
-    console.log("All offerings: ", rows)
-    return undefined
-  }
-}
-*/
+export const Offerings = new OfferingsRepository()

@@ -1,5 +1,5 @@
 import { Close, MessageKind, MessageKindClass, Order, OrderStatus, Quote, ExchangesApi, Rfq, GetExchangesFilter } from '@tbdex/http-server';
-declare class _ExchangeRepository implements ExchangesApi {
+export declare class ExchangeRepository implements ExchangesApi {
     getExchanges(opts: {
         filter: GetExchangesFilter;
     }): Promise<MessageKindClass[][]>;
@@ -31,5 +31,5 @@ declare class _ExchangeRepository implements ExchangesApi {
         message: MessageKindClass;
     }): Promise<void>;
 }
-export declare const Exchanges: _ExchangeRepository;
-export {};
+export declare const Exchanges: ExchangeRepository;
+export declare function handleLightningInvoicePaid(invoice: any): Promise<void>;
