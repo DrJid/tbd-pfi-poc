@@ -212,6 +212,5 @@ export const localpfidid = {
         assertionMethod: ['#dwn-sig']
     }
 };
-// process.env.NODE_ENV === 'production'
 export const pfiDid = process.env.NODE_ENV === 'production' ? remotepfidid : localpfidid;
 //# sourceMappingURL=pfidid.js.map
