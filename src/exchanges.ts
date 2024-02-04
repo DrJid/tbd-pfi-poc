@@ -1,4 +1,4 @@
-import { Close, MessageKind, MessageKindClass, Order, OrderStatus, Quote, ExchangesApi, Rfq, GetExchangesFilter, MessageModel, Offering } from '@tbdex/http-server'
+import { Close, MessageKind, MessageKindClass, Order, OrderStatus, Quote, ExchangesApi, Rfq, GetExchangesFilter, MessageModel } from '@tbdex/http-server'
 import { Message } from '@tbdex/http-server'
 import { pfiDid } from './util/pfidid.js'
 import client from './util/db.js'
